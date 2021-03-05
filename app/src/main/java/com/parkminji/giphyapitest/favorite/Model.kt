@@ -8,7 +8,6 @@ import com.parkminji.giphyapitest.model.Gif
 import com.parkminji.giphyapitest.model.Image
 import com.parkminji.giphyapitest.model.PreviewGif
 
-
 class Model(private val requiredPresenter: Contract.RequiredPresenter)  {
     private lateinit var adapter: GifListAdapter
 
@@ -59,5 +58,9 @@ class Model(private val requiredPresenter: Contract.RequiredPresenter)  {
         }
 
         return list
+    }
+
+    fun destroyDbInstance(){
+        GifsDB.destroyInstance()
     }
 }

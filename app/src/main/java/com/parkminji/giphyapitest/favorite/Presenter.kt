@@ -19,6 +19,10 @@ class Presenter(private val view: Contract.View) : Contract.Presenter, Contract.
         model?.getFavoriteGifList()
     }
 
+    override fun destroyDbInstance() {
+        model?.destroyDbInstance()
+    }
+
     override fun setAdapter(adapter: GifListAdapter) {
         view.setAdapter(adapter)
     }

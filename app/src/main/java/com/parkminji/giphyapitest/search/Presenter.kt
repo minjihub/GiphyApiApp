@@ -19,12 +19,24 @@ class Presenter(private val view: Contract.View) : Contract.Presenter, Contract.
         model?.getGifList()
     }
 
+    override fun destroyDbInstance() {
+        model?.destroyDbInstance()
+    }
+
     override fun setAdapter(adapter: GifListAdapter) {
         view.setAdapter(adapter)
     }
 
     override fun notifyList() {
         view.notifyList()
+    }
+
+    override fun failSearch() {
+        view.failSearch()
+    }
+
+    override fun setNullList() {
+        view.setNullList()
     }
 
     override fun getCurrentContext(): Context? {

@@ -15,6 +15,7 @@ interface Contract {
     interface Presenter {
         fun createListAdapter()
         fun getFavoriteGifList()
+        fun destroyDbInstance()
     }
 
     interface RequiredPresenter {

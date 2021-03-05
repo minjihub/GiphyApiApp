@@ -7,6 +7,7 @@ import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.*
 import com.parkminji.giphyapitest.adapter.GifListAdapter
@@ -61,6 +62,14 @@ class GifListView : Fragment(), Contract.View{
         view?.list_view?.adapter?.notifyDataSetChanged()
     }
 
+    override fun failSearch() {
+        Toast.makeText(this.context, "네트워크를 확인해주세요.", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun setNullList() {
+        Toast.makeText(this.context, "문제가 발생했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+    }
+
     override fun getCurrentContext(): Context? {
         return this.context
     }
@@ -77,5 +86,10 @@ class GifListView : Fragment(), Contract.View{
                 view?.list_view?.adapter?.notifyDataSetChanged()
             }
         }
+    }
+
+    override fun onDestroy() {
+        presenter?.destroyDbInstance()
+        super.onDestroy()
     }
 }

@@ -62,4 +62,9 @@ class FavoriteListView : Fragment(), Contract.View {
             }
         }
     }
+
+    override fun onDestroy() {
+        presenter?.destroyDbInstance()
+        super.onDestroy()
+    }
 }

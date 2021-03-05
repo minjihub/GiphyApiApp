@@ -53,6 +53,7 @@ class Model(private val requiredPresenter: Contract.RequiredPresenter) {
         call?.enqueue(object : Callback<GifData>{
             override fun onFailure(call: Call<GifData>, t: Throwable) {
                 Log.e("Retrofit_fail", t.toString())
+                requiredPresenter.failSearch()
             }
 
             override fun onResponse(call: Call<GifData>, response: Response<GifData>) {
@@ -62,7 +63,7 @@ class Model(private val requiredPresenter: Contract.RequiredPresenter) {
                 list?.let {
                     adapter.addGifs(list)
                     getFavoriteGifList()
-                }
+                } ?: requiredPresenter.setNullList()
             }
         })
     }
@@ -83,5 +84,9 @@ class Model(private val requiredPresenter: Contract.RequiredPresenter) {
             adapter.addFavoriteGifs(list)
             requiredPresenter.getViewHandler().sendEmptyMessage(0)
         }).start()
+    }
+
+    fun destroyDbInstance(){
+        GifsDB.destroyInstance()
     }
 }

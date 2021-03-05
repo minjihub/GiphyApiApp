@@ -25,6 +25,5 @@ abstract class GifsDB : RoomDatabase(){
         fun destroyInstance(){
             INSTANCE = null
         }
-
     }
 }

@@ -1,15 +1,19 @@
 package com.parkminji.giphyapitest.adapter
 
 import android.app.Dialog
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.parkminji.giphyapitest.R
 import com.parkminji.giphyapitest.db.GifEntity
-import com.parkminji.giphyapitest.db.GifsDB
 import com.parkminji.giphyapitest.model.Gif
 import kotlinx.android.synthetic.main.detail_gif_dialog.*
 import kotlinx.android.synthetic.main.gif_item_layout.view.*
@@ -78,14 +82,28 @@ class GifListAdapter : RecyclerView.Adapter<GifListAdapter.GifListHolder>() {
 
             val detailUrl = gif.images?.downsized?.url
             detailUrl?.let {
-                view.image_view.setOnClickListener {
-                    Dialog(view.context).apply {
-                        setContentView(R.layout.detail_gif_dialog)
-                        val detailView = this.gif_detail_view
-                        Glide.with(view)
+                val dialog = Dialog(view.context).apply {
+                    setContentView(R.layout.detail_gif_dialog)
+                    val detailView = this.gif_detail_view
+                    val progressBar = this.detail_progress_bar
+                    val requestListener = object : RequestListener<Drawable>{
+                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                            progressBar.visibility = View.GONE
+                            return false
+                        }
+
+                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                            progressBar.visibility = View.GONE
+                            return false
+                        }
+                    }
+                    Glide.with(view)
                             .load(detailUrl)
+                            .listener(requestListener)
                             .into(detailView)
-                    }.show()
+                }
+                view.image_view.setOnClickListener{
+                    dialog.show()
                 }
             }
 
