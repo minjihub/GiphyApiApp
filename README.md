@@ -1,5 +1,5 @@
 # GiphyApiApp
-(GIPHY API) Treanding GIFs를 보고, 마음에 드는 GIF를 셀렉하는 앱
+(GIPHY API) Trending GIFs를 보고, 마음에 드는 GIF를 셀렉하는 앱
 
 <br>
 
