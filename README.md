@@ -61,7 +61,8 @@ Toggle 버튼 클릭 시 Room DB 저장/삭제
 Trending GIFs 화면과 Favorite 화면이 공통된 어댑터를 사용합니다. Trending GIFs 화면에서는 Toggle 버튼 클릭에 따라 Room에 저장/삭제를 시켜야하지만 이에 따른 리스트 갱신이 필요하지 않고,
 Favorite 화면에서는 Toggle ON 상태의 아이템만 보여주기 위해 리스트 갱신이 필요합니다. <br>
 
-이런 부분을 해결하기 위해 ChangeGifDataStateListener라는 인터페이스를 만들었고, adapter에 이 인터페이스를 set할 수 있는 메소드를 만들었습니다.<br>
+이런 부분을 해결하기 위해 ChangeGifDataStateListener라는 인터페이스를 만들었습니다. <br>
+adapter에 이 인터페이스를 set할 수 있는 메소드를 만들고, Toggle isChecked 상태의 따라 set된 인터페이스를 이용해 움직이게 됩니다. <br>
 그 결과 각 화면의 model에서 ChangeGifDataStateListener를 생성하여 각각 필요한 로직을 넣어 처리할 수 있게 되었고, Room DB를 이용하는 것 또한 model에서 처리하면서 문제를 해결할 수 있었습니다.
 
 
