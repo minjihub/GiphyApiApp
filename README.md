@@ -56,7 +56,7 @@ Toggle 버튼 클릭 시 Room DB 저장/삭제
 ## 트러블 슈팅
 
 처음에는 Gif List Adapter에서 Toggle 버튼을 클릭 했을 시 Room에 값이 저장/삭제 되도록 만들었습니다. <br>
-하지만 Room DB를 이용하는 것을 model(비즈니스 로직)에서 처리하고 싶었고, Favorite 화면에서 Toggle이 ON 상태이고 다시 클릭해서 OFF되도록 만들면 Room에서 삭제가 되지만
+하지만 Room DB를 이용하는 것을 model(비즈니스 로직)에서 처리하고 싶었고, Favorites 화면에서 Toggle이 ON 상태이고 다시 클릭해서 OFF되도록 만들면 Room에서 삭제가 되지만
 리스트를 갱신시키는 부분에 어려움이 있었습니다. <br>
 Trending GIFs 화면과 Favorite 화면이 공통된 어댑터를 사용합니다. Trending GIFs 화면에서는 Toggle 버튼 클릭에 따라 Room에 저장/삭제를 시켜야하지만 이에 따른 리스트 갱신이 필요하지 않고,
 Favorite 화면에서는 Toggle ON 상태의 아이템만 보여주기 위해 리스트 갱신이 필요합니다. <br>
