@@ -75,7 +75,7 @@ adapter에 이 인터페이스를 set할 수 있는 메소드를 만들고, Togg
 <img src="https://user-images.githubusercontent.com/70570798/110091163-82298100-7ddb-11eb-97a9-86a93858fd38.jpg"  width="350" height="600">
 <br />
 
-2. Trending GIFs > 아이템 클릭 > 상세 GIF 화면
+2. Trending GIFs > 아이템 클릭 > 상세 GIF 화면 (고화질)
 <img src="https://user-images.githubusercontent.com/70570798/110091627-01b75000-7ddc-11eb-99e3-d95879f4047b.jpg"  width="350" height="600">
 <br />
 
