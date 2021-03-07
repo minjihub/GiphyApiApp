@@ -1,7 +1,6 @@
 package com.parkminji.giphyapitest.search
 
 import android.content.Context
-import android.os.Handler
 import com.parkminji.giphyapitest.adapter.GifListAdapter
 
 interface Contract {
@@ -11,7 +10,6 @@ interface Contract {
         fun failSearch()
         fun setNullList()
         fun getCurrentContext(): Context?
-        fun getViewHandler(): Handler
     }
 
     interface Presenter {
@@ -26,6 +24,5 @@ interface Contract {
         fun failSearch()
         fun setNullList()
         fun getCurrentContext(): Context?
-        fun getViewHandler(): Handler
     }
 }

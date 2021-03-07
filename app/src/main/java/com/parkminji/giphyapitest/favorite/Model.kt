@@ -1,5 +1,6 @@
 package com.parkminji.giphyapitest.favorite
 
+import android.os.AsyncTask
 import com.parkminji.giphyapitest.adapter.ChangeGifDataStateListener
 import com.parkminji.giphyapitest.adapter.GifListAdapter
 import com.parkminji.giphyapitest.db.GifEntity
@@ -21,14 +22,21 @@ class Model(private val requiredPresenter: Contract.RequiredPresenter)  {
             override fun deleteGif(id: String) {
                 val context = requiredPresenter.getCurrentContext() ?: return
                 val gifDB = GifsDB.getInstance(context)
-                Thread(Runnable {
-                    gifDB?.gifsDao()?.deleteGif(id)
-                    val gifList = gifDB?.gifsDao()?.loadAllGifs() ?: return@Runnable
-                    val list = convertGifEntityListToGifList(gifList)
-                    adapter.changeGifList(list)
-                    adapter.addFavoriteGifs(list)
-                    requiredPresenter.getViewHandler().sendEmptyMessage(0)
-                }).start()
+                val deleteTask = object :AsyncTask<Unit, Unit, Unit>(){
+                    override fun doInBackground(vararg params: Unit?) {
+                        gifDB?.gifsDao()?.deleteGif(id)
+                        val gifList = gifDB?.gifsDao()?.loadAllGifs() ?: return
+                        val list = convertGifEntityListToGifList(gifList)
+                        adapter.changeGifList(list)
+                        adapter.addFavoriteGifs(list)
+                    }
+
+                    override fun onPostExecute(result: Unit?) {
+                        super.onPostExecute(result)
+                        requiredPresenter.notifyList()
+                    }
+                }
+                deleteTask.execute()
             }
         }
         adapter.setChangeGifDataStateListener(listener)
@@ -38,13 +46,21 @@ class Model(private val requiredPresenter: Contract.RequiredPresenter)  {
     fun getFavoriteGifList(){
         val context = requiredPresenter.getCurrentContext() ?: return
         val gifsDB = GifsDB.getInstance(context)
-        Thread(Runnable {
-            val gifList = gifsDB?.gifsDao()?.loadAllGifs() ?: return@Runnable
-            val list = convertGifEntityListToGifList(gifList)
-            adapter.addGifs(list)
-            adapter.addFavoriteGifs(list)
-            requiredPresenter.getViewHandler().sendEmptyMessage(0)
-        }).start()
+
+        val getFavoriteListTask = object : AsyncTask<Unit, Unit, Unit>(){
+            override fun doInBackground(vararg params: Unit?) {
+                val gifList = gifsDB?.gifsDao()?.loadAllGifs() ?: return
+                val list = convertGifEntityListToGifList(gifList)
+                adapter.addGifs(list)
+                adapter.addFavoriteGifs(list)
+            }
+
+            override fun onPostExecute(result: Unit?) {
+                super.onPostExecute(result)
+                requiredPresenter.notifyList()
+            }
+        }
+        getFavoriteListTask.execute()
     }
 
     private fun convertGifEntityListToGifList(entityList: List<GifEntity>): List<Gif>{

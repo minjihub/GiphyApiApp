@@ -1,5 +1,6 @@
 package com.parkminji.giphyapitest.search
 
+import android.os.AsyncTask
 import android.util.Log
 import com.parkminji.giphyapitest.adapter.ChangeGifDataStateListener
 import com.parkminji.giphyapitest.adapter.GifListAdapter
@@ -71,19 +72,26 @@ class Model(private val requiredPresenter: Contract.RequiredPresenter) {
     private fun getFavoriteGifList(){
         val context = requiredPresenter.getCurrentContext() ?: return
         val gifsDB = GifsDB.getInstance(context)
-        Thread(Runnable {
-            val gifList = gifsDB?.gifsDao()?.loadAllGifs() ?: return@Runnable
-            val list: MutableList<Gif> = mutableListOf()
-            for(entity in gifList){
-                val previewGif = PreviewGif(entity.previewUrl)
-                val detailGif = PreviewGif(entity.detailUrl)
-                val image = Image(previewGif, detailGif)
-                val gif = Gif(entity.id, entity.title, image)
-                list.add(gif)
+        val getFavoriteListTask = object : AsyncTask<Unit, Unit, Unit>(){
+            override fun doInBackground(vararg params: Unit?) {
+                val gifList = gifsDB?.gifsDao()?.loadAllGifs() ?: return
+                val list: MutableList<Gif> = mutableListOf()
+                for(entity in gifList){
+                    val previewGif = PreviewGif(entity.previewUrl)
+                    val detailGif = PreviewGif(entity.detailUrl)
+                    val image = Image(previewGif, detailGif)
+                    val gif = Gif(entity.id, entity.title, image)
+                    list.add(gif)
+                }
+                adapter.addFavoriteGifs(list)
             }
-            adapter.addFavoriteGifs(list)
-            requiredPresenter.getViewHandler().sendEmptyMessage(0)
-        }).start()
+
+            override fun onPostExecute(result: Unit?) {
+                super.onPostExecute(result)
+                requiredPresenter.notifyList()
+            }
+        }
+        getFavoriteListTask.execute()
     }
 
     fun destroyDbInstance(){

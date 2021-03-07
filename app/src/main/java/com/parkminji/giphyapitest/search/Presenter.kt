@@ -1,7 +1,6 @@
 package com.parkminji.giphyapitest.search
 
 import android.content.Context
-import android.os.Handler
 import com.parkminji.giphyapitest.adapter.GifListAdapter
 
 class Presenter(private val view: Contract.View) : Contract.Presenter, Contract.RequiredPresenter {
@@ -41,9 +40,5 @@ class Presenter(private val view: Contract.View) : Contract.Presenter, Contract.
 
     override fun getCurrentContext(): Context? {
         return view.getCurrentContext()
-    }
-
-    override fun getViewHandler(): Handler {
-        return view.getViewHandler()
     }
 }

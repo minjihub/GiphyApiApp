@@ -2,8 +2,6 @@ package com.parkminji.giphyapitest
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -72,20 +70,6 @@ class GifListView : Fragment(), Contract.View{
 
     override fun getCurrentContext(): Context? {
         return this.context
-    }
-
-    override fun getViewHandler(): Handler {
-        return viewHandler
-    }
-
-    private val viewHandler = object : Handler(){
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-            if(msg.what == 0){
-                progress_bar.visibility = View.GONE
-                view?.list_view?.adapter?.notifyDataSetChanged()
-            }
-        }
     }
 
     override fun onDestroy() {
