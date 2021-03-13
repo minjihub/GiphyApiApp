@@ -69,6 +69,38 @@ adapter에 이 인터페이스를 set할 수 있는 메소드를 만들고, Togg
 
 <br>
 
+## 트러블 슈팅2
+
+인터넷 환경이 고르지 못한 상태에서 앱을 실행해보니 상세화면에서 gif load fail 이슈가 발생되었습니다. 이 경우 강종되지는 않으나 아무것도 load 되지 않기때문에 화면 컨트롤이 필요했습니다. <br>
+우선 오류가 발생되면 Glide에서 제공하고 있는 .error() 라인을 타게 됩니다. 먼저 이 라인을 추가하여 이미지 로드 실패 이미지를 보여주려 했습니다. <br>
+그리고 '고화질 로드에 실패했다면, 저화질의 preview_gif url을 시도해보는게 어떨까'라는 생각이 들어서 error 발생 시에 저화질 url을 로드하는 glide를 한번 더 생성하고, 저화질 로드조차 실패한다면 실패 이미지를 보여주는 것으로 만들게되었습니다. <br>
+<br>
+
+```kotlin
+
+Glide.with(this.context)
+          .load(detailUrl)
+          .listener(requestListener)
+          .error(
+                      Glide.with(detailView)
+                             .load(previewUrl)
+                             .listener(requestListener)
+                             .error(R.drawable.error_load_fail_gif)
+          )
+          .into(detailView)
+```  
+<br>
+
+그러던 중 into 된 ImageView가 wrap_content로 되어있는데, Glide는 LayoutParams.WRAP_CONTENT 일 경우 디바이스 사이즈에 맞게 이미지를 요청해준다는 것을 알게 되었습니다.
+(로드 된 gif의 width, height가 아닌 디바이스에 알맞는 크기의 gif가 보임) <br>
+하지만, error를 탔을 경우 새로 실행하는 Glide 객체에서는 .with 안에 context가 아닌 ImageView를 넣어주기때문에 디바이스 사이즈를 고려하지 않은, 로드 된 gif의 width과 height이 세팅이 되면서 매우 작은 사이즈로 보였습니다. <br>
+이 문제를 해결하기 위해 width를 match_parent로 변경하였으나 Dialog 객체에서는 match_parent를 적용한 ImageView에 gif가 로드 되지 않았고, 현재 디바이스의 width를 가져와서 ImageView의 width를 변경하였더니 로드가 되었습니다.(마진을 주기위해 width-200) <br> 
+Dialog는 width가 match_parent인 layout이더라도 고정된 width값을 세팅해주지 않으면 적용이 안되는 것 같았고, 공식문서에 Dialog를 직접 인스턴스화하는 것을 삼가하고 대신 서브 클래스인 AlertDialog를 사용하라고 명시되어 있었습니다. <br> 
+AlertDialog로 변경하였더니 match_parent가 적용되면서 현재 디바이스의 width를 가져오는 것은 불필요해졌고 모든 로드되는 gif는 동일한 너비(match_parent - margin값)로 볼 수 있게 되었습니다. <br>
+   
+
+<br>
+
 ## 결과
 #### 모든 imageView는 gif로 움직이지만 캡쳐 이미지를 첨부한 점 참고 부탁드립니다.
 1. Trending GIFs 화면
