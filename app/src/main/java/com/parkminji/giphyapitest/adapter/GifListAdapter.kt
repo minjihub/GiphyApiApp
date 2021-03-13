@@ -74,37 +74,14 @@ class GifListAdapter : RecyclerView.Adapter<GifListAdapter.GifListHolder>() {
             }
 
             val previewGifUrl = gif.images?.preview_gif?.url
-            previewGifUrl?.let {
-                Glide.with(view)
-                    .load(it)
-                    .into(view.image_view)
-            }
-
             val detailUrl = gif.images?.downsized?.url
-            detailUrl?.let {
-                val dialog = Dialog(view.context).apply {
-                    setContentView(R.layout.detail_gif_dialog)
-                    val detailView = this.gif_detail_view
-                    val progressBar = this.detail_progress_bar
-                    val requestListener = object : RequestListener<Drawable>{
-                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                            progressBar.visibility = View.GONE
-                            return false
-                        }
 
-                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            progressBar.visibility = View.GONE
-                            return false
-                        }
-                    }
-                    Glide.with(view)
-                            .load(detailUrl)
-                            .listener(requestListener)
-                            .into(detailView)
-                }
-                view.image_view.setOnClickListener{
-                    dialog.show()
-                }
+            Glide.with(view)
+                    .load(previewGifUrl)
+                    .into(view.image_view)
+
+            view.image_view.setOnClickListener{
+                showDialog(detailUrl, previewGifUrl)
             }
 
             view.like_button.setOnCheckedChangeListener(object: CompoundButton.OnCheckedChangeListener{
@@ -117,6 +94,41 @@ class GifListAdapter : RecyclerView.Adapter<GifListAdapter.GifListHolder>() {
                     }
                 }
             })
+        }
+
+        private fun showDialog(detailUrl: String?, previewUrl: String?){
+            Dialog(view.context).apply {
+                setContentView(R.layout.detail_gif_dialog)
+                val detailView = this.gif_detail_view
+                val progressBar = this.detail_progress_bar
+
+                val deviceWidth = view.context.resources.displayMetrics.widthPixels
+                val layoutParams = detailView.layoutParams
+                layoutParams.width = deviceWidth - 200
+                detailView.layoutParams = layoutParams
+
+                val requestListener = object : RequestListener<Drawable>{
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        progressBar.visibility = View.GONE
+                        return false
+                    }
+
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        progressBar.visibility = View.GONE
+                        return false
+                    }
+                }
+
+                Glide.with(this.context)
+                        .load(detailUrl)
+                        .listener(requestListener)
+                        .error(
+                                Glide.with(detailView)
+                                        .load(previewUrl)
+                                        .error(R.drawable.error_load_fail_gif)
+                        )
+                        .into(detailView)
+            }.show()
         }
     }
 }
