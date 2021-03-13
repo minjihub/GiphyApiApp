@@ -1,11 +1,14 @@
 package com.parkminji.giphyapitest.adapter
 
-import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import androidx.appcompat.app.AlertDialog
+import androidx.core.view.setPadding
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -15,7 +18,7 @@ import com.bumptech.glide.request.target.Target
 import com.parkminji.giphyapitest.R
 import com.parkminji.giphyapitest.db.GifEntity
 import com.parkminji.giphyapitest.model.Gif
-import kotlinx.android.synthetic.main.detail_gif_dialog.*
+import kotlinx.android.synthetic.main.detail_gif_dialog.view.*
 import kotlinx.android.synthetic.main.gif_item_layout.view.*
 
 class GifListAdapter : RecyclerView.Adapter<GifListAdapter.GifListHolder>() {
@@ -97,38 +100,40 @@ class GifListAdapter : RecyclerView.Adapter<GifListAdapter.GifListHolder>() {
         }
 
         private fun showDialog(detailUrl: String?, previewUrl: String?){
-            Dialog(view.context).apply {
-                setContentView(R.layout.detail_gif_dialog)
-                val detailView = this.gif_detail_view
-                val progressBar = this.detail_progress_bar
+            val inflater = LayoutInflater.from(view.context)
+            val dialogLayout = inflater.inflate(R.layout.detail_gif_dialog, null)
+            val detailView = dialogLayout.gif_detail_view
+            val progressBar = dialogLayout.detail_progress_bar
 
-                val deviceWidth = view.context.resources.displayMetrics.widthPixels
-                val layoutParams = detailView.layoutParams
-                layoutParams.width = deviceWidth - 200
-                detailView.layoutParams = layoutParams
-
-                val requestListener = object : RequestListener<Drawable>{
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        progressBar.visibility = View.GONE
-                        return false
-                    }
-
-                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        progressBar.visibility = View.GONE
-                        return false
-                    }
+            val requestListener = object : RequestListener<Drawable>{
+                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                    progressBar.visibility = View.GONE
+                    return false
                 }
 
-                Glide.with(this.context)
-                        .load(detailUrl)
-                        .listener(requestListener)
-                        .error(
-                                Glide.with(detailView)
-                                        .load(previewUrl)
-                                        .error(R.drawable.error_load_fail_gif)
-                        )
-                        .into(detailView)
-            }.show()
+                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                    progressBar.visibility = View.GONE
+                    detailView.setPadding(10)
+                    return false
+                }
+            }
+
+            Glide.with(view.context)
+                    .load(detailUrl)
+                    .listener(requestListener)
+                    .error(
+                            Glide.with(detailView)
+                                    .load(previewUrl)
+                                    .listener(requestListener)
+                                    .error(R.drawable.error_load_fail_gif)
+                    )
+                    .into(detailView)
+
+            AlertDialog.Builder(view.context).run {
+                setView(dialogLayout)
+                show()
+            }.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
         }
     }
 }
