@@ -44,9 +44,7 @@ class GifListAdapter : RecyclerView.Adapter<GifListAdapter.GifListHolder>() {
     }
 
     fun addGifs(list: List<Gif>){
-        for(gif in list){
-            gifList.add(gif)
-        }
+        gifList.addAll(list)
     }
 
     fun addFavoriteGifs(list: List<Gif>){
@@ -55,9 +53,7 @@ class GifListAdapter : RecyclerView.Adapter<GifListAdapter.GifListHolder>() {
 
     fun changeGifList(list: List<Gif>){
         gifList.clear()
-        for(gif in list){
-            gifList.add(gif)
-        }
+        gifList.addAll(list)
     }
 
     override fun getItemId(position: Int): Long {
