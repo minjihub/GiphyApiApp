@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.parkminji.giphyapitest.adapter.GifListAdapter
 import com.parkminji.giphyapitest.favorite.Contract
 import com.parkminji.giphyapitest.favorite.Presenter
-import kotlinx.android.synthetic.main.title_list_view.view.*
+import kotlinx.android.synthetic.main.fragment_grid_list.*
+import kotlinx.android.synthetic.main.fragment_grid_list.view.*
 
 class FavoriteListView : Fragment(), Contract.View {
     private var presenter: Contract.Presenter? = null
@@ -20,8 +21,8 @@ class FavoriteListView : Fragment(), Contract.View {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_favorite_list, container, false)
-        view.title_name.text = "Favorites"
+        val view = inflater.inflate(R.layout.fragment_grid_list, container, false)
+        view.title_name?.text = "Favorites"
         return view
     }
 
@@ -33,7 +34,7 @@ class FavoriteListView : Fragment(), Contract.View {
     }
 
     override fun setAdapter(adapter: GifListAdapter) {
-        view?.list_view?.let{
+        list_view?.let{
             val layoutManager = GridLayoutManager(context, 2)
             it.layoutManager = layoutManager
             it.adapter = adapter
@@ -41,7 +42,7 @@ class FavoriteListView : Fragment(), Contract.View {
     }
 
     override fun notifyList() {
-        view?.list_view?.adapter?.notifyDataSetChanged()
+        list_view?.adapter?.notifyDataSetChanged()
     }
 
     override fun getCurrentContext(): Context? {
